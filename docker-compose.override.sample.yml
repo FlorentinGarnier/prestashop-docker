@@ -1,0 +1,36 @@
+version: '3'
+services:
+
+  apache:
+    volumes:
+      - ./www/modules:/var/www/html/modules
+      - ./www/override:/var/www/html/override
+      - ./www/themes:/var/www/html/themes
+    restart: "no"
+
+  php:
+    environment:
+      PS_INSTALL_AUTO: 1
+      PS_DEV_MODE: 1
+      PS_FOLDER_ADMIN: ~
+      PS_DOMAIN: ~
+      ADMIN_MAIL: ~
+      ADMIN_PASSWD: ~
+      PS_FOLDER_INSTALL: ~
+    volumes:
+      - ./www/modules:/var/www/html/modules
+      - ./www/override:/var/www/html/override
+      - ./www/themes:/var/www/html/themes
+    restart: "no"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=mariadb
+    restart: "no"
+    volumes:
+      - /sessions
+    links:
+      - mariadb

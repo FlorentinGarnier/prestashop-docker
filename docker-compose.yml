@@ -1,0 +1,46 @@
+version: '3'
+services:
+
+  mariadb:
+    image: mariadb:10.3
+    environment:
+      MYSQL_DATABASE: ~
+      MYSQL_USER: ~
+      MYSQL_PASSWORD: ~
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    volumes:
+      - mysql:/var/lib/mysql
+    restart: unless-stopped
+
+  apache:
+    build: docker/apache
+    ports:
+      - 80:80
+    volumes:
+      - www:/var/www/html
+    restart: unless-stopped
+    links:
+      - php
+
+  php:
+    image: prestashop/prestashop:1.7-7.2-fpm
+    environment:
+      PS_DOMAIN: ~
+      PS_LANGUAGE: ~
+      PS_COUNTRY: ~
+      DB_SERVER: ~
+      DB_NAME: ~
+      DB_USER: ~
+      DB_PASSWD: ~
+      PS_DOMAIN: ~
+    volumes:
+      - www:/var/www/html
+    restart: unless-stopped
+    links:
+      - mariadb
+
+
+
+volumes:
+  mysql:
+  www:
